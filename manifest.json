@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Kiosk Control",
+  "version": "0.1.0",
+  "description": "Chrome OS kiosk extension. Bundled landing page plus Ctrl+Shift+G control overlay for zoom, screen rotation, and device reboot.",
+  "kiosk_enabled": true,
+  "minimum_chrome_version": "120",
+  "permissions": ["system.display", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "open-controls": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+G",
+        "chromeos": "Ctrl+Shift+G"
+      },
+      "description": "Open the kiosk control overlay"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "home.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "kiosk-control-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome OS kiosk control extension and Playwright smoke tests.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}
