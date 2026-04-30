@@ -102,23 +102,23 @@ test.describe("Kiosk Control extension", () => {
     await expect(page.locator("#controls")).toBeHidden();
   });
 
-  test("Ctrl+Shift+G opens overlay, Esc closes it", async () => {
+  test("Ctrl+Shift+S opens overlay, Esc closes it", async () => {
     await page.locator("body").click();
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     await expect(page.locator("#controls")).toBeVisible();
     await page.keyboard.press("Escape");
     await expect(page.locator("#controls")).toBeHidden();
   });
 
   test("close button hides overlay", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     await expect(page.locator("#controls")).toBeVisible();
     await page.click("#close");
     await expect(page.locator("#controls")).toBeHidden();
   });
 
   test("zoom in increments label and clamps at max", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     for (let i = 0; i < 3; i++) await page.click("#zoom-in");
     await expect(page.locator("#zoom-val")).toHaveText("130%");
     const calls = await page.evaluate(() => window.__calls.zoom);
@@ -127,14 +127,14 @@ test.describe("Kiosk Control extension", () => {
   });
 
   test("zoom out decrements label", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     await page.click("#zoom-out");
     await page.click("#zoom-out");
     await expect(page.locator("#zoom-val")).toHaveText("80%");
   });
 
   test("rotation 90 deg calls setDisplayProperties with primary display", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     await page.click('button.rot-btn[data-rotation="90"]');
     const calls = await page.evaluate(() => window.__calls.rotation);
     expect(calls.length).toBe(1);
@@ -143,7 +143,7 @@ test.describe("Kiosk Control extension", () => {
   });
 
   test("each rotation button passes its degree value", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     for (const deg of [0, 90, 180, 270]) {
       await page.click(`button.rot-btn[data-rotation="${deg}"]`);
     }
@@ -152,7 +152,7 @@ test.describe("Kiosk Control extension", () => {
   });
 
   test("reboot cancel does NOT call runtime.restart", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     page.once("dialog", (d) => d.dismiss());
     await page.click("#reboot");
     // Give the cancel handler a tick.
@@ -163,7 +163,7 @@ test.describe("Kiosk Control extension", () => {
   });
 
   test("reboot confirm DOES call runtime.restart", async () => {
-    await page.keyboard.press("Control+Shift+G");
+    await page.keyboard.press("Control+Shift+S");
     page.once("dialog", (d) => d.accept());
     await page.click("#reboot");
     await page.waitForFunction(() => window.__calls.reboot > 0);

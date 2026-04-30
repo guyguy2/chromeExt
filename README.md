@@ -1,6 +1,6 @@
 # Kiosk Control
 
-Chrome OS / Chromebox kiosk extension. Bundles a small landing page (acting as the "PWA" content) and adds a `Ctrl+Shift+G` overlay with three controls:
+Chrome OS / Chromebox kiosk extension. Bundles a small landing page (acting as the "PWA" content) and adds a `Ctrl+Shift+S` overlay with three controls:
 
 - **Zoom** — `+` / `-` in 10% steps, range 50%–300%
 - **Screen rotation** — buttons for 0°, 90°, 180°, 270° (the only values Chrome's display API supports)
@@ -10,7 +10,7 @@ Chrome OS / Chromebox kiosk extension. Bundles a small landing page (acting as t
 
 ```
 manifest.json     MV3 manifest (kiosk_enabled, commands, perms)
-background.js     service worker, forwards Ctrl+Shift+G to active tab
+background.js     service worker, forwards Ctrl+Shift+S to active tab
 home.html         landing page + hidden control overlay markup
 home.css          page + overlay styles
 home.js           overlay logic, zoom / rotation / reboot handlers
@@ -29,7 +29,7 @@ run-tests.sh      one-shot test runner
 4. Toggle **Developer mode** on (top right).
 5. Click **Load unpacked** and select the cloned repo directory.
 6. Open a new tab — the landing page loads via the `chrome_url_overrides.newtab` setting.
-7. Press **Ctrl + Shift + G** to open the control overlay.
+7. Press **Ctrl + Shift + S** to open the control overlay.
 
 ## Reboot caveat
 
@@ -49,7 +49,7 @@ For real kiosk deployment:
 The script installs `npm` deps and the Playwright Chromium build on first run, then executes the smoke tests in `tests/`. Tests load the unpacked extension into a Chromium persistent context, navigate to `home.html`, and verify:
 
 - Landing page renders dummy content.
-- Overlay opens via `Ctrl+Shift+G` and closes via `Esc` / close button.
+- Overlay opens via `Ctrl+Shift+S` and closes via `Esc` / close button.
 - Zoom buttons update the displayed value and call `chrome.tabs.setZoom`.
 - Rotation buttons call `chrome.system.display.setDisplayProperties` with the right rotation value (the API is stubbed during the test so your real display is never rotated).
 - Reboot button shows a confirmation dialog; cancelling it does not call `chrome.runtime.restart`.

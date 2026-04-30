@@ -120,7 +120,7 @@ document.addEventListener("keydown", (e) => {
     closeOverlay();
     return;
   }
-  if (e.ctrlKey && e.shiftKey && (e.key === "G" || e.key === "g")) {
+  if (e.ctrlKey && e.shiftKey && (e.key === "S" || e.key === "s")) {
     e.preventDefault();
     toggleOverlay();
   }
