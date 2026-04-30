@@ -48,6 +48,10 @@ function applyZoom(next) {
   setStatus("Zoom set to " + Math.round(target * 100) + "%");
 }
 
+function isKioskOnlyError(msg) {
+  return typeof msg === "string" && /kiosk/i.test(msg);
+}
+
 function applyRotation(deg) {
   if (!chrome?.system?.display?.getInfo) {
     setStatus("Rotation unavailable: chrome.system.display missing", "error");
@@ -64,8 +68,18 @@ function applyRotation(deg) {
       { rotation: deg },
       () => {
         const err = chrome.runtime.lastError;
-        if (err) setStatus("Rotation failed: " + err.message, "error");
-        else setStatus("Rotation set to " + deg + " degrees");
+        if (err) {
+          if (isKioskOnlyError(err.message)) {
+            setStatus(
+              "Rotation requires kiosk session (managed device only). Deploy via admin console.",
+              "error",
+            );
+          } else {
+            setStatus("Rotation failed: " + err.message, "error");
+          }
+          return;
+        }
+        setStatus("Rotation set to " + deg + " degrees");
       },
     );
   });
@@ -85,6 +99,15 @@ function applyReboot() {
   }
   setStatus("Rebooting...");
   chrome.runtime.restart();
+  // chrome.runtime.restart() is fire-and-forget. In a real kiosk session the
+  // device reboots before this timer fires; if we're still alive a moment
+  // later, the API silently no-op'd because we're not in a kiosk session.
+  setTimeout(() => {
+    setStatus(
+      "Reboot requires kiosk session (managed device only). Deploy via admin console.",
+      "error",
+    );
+  }, 500);
 }
 
 closeBtn.addEventListener("click", closeOverlay);
