@@ -42,26 +42,10 @@ function clampZoom(z) {
 
 function applyZoom(next) {
   const target = clampZoom(next);
-  if (!chrome?.tabs?.setZoom) {
-    setStatus("Zoom unavailable: chrome.tabs API missing", "error");
-    return;
-  }
-  chrome.tabs.getCurrent((tab) => {
-    if (!tab) {
-      setStatus("Zoom failed: no current tab", "error");
-      return;
-    }
-    chrome.tabs.setZoom(tab.id, target, () => {
-      const err = chrome.runtime.lastError;
-      if (err) {
-        setStatus("Zoom failed: " + err.message, "error");
-        return;
-      }
-      currentZoom = target;
-      zoomVal.textContent = Math.round(target * 100) + "%";
-      setStatus("Zoom set to " + Math.round(target * 100) + "%");
-    });
-  });
+  document.body.style.zoom = String(target);
+  currentZoom = target;
+  zoomVal.textContent = Math.round(target * 100) + "%";
+  setStatus("Zoom set to " + Math.round(target * 100) + "%");
 }
 
 function applyRotation(deg) {

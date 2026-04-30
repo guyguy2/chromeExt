@@ -50,7 +50,7 @@ The script installs `npm` deps and the Playwright Chromium build on first run, t
 
 - Landing page renders dummy content.
 - Overlay opens via `Ctrl+Shift+S` and closes via `Esc` / close button.
-- Zoom buttons update the displayed value and call `chrome.tabs.setZoom`.
+- Zoom buttons update the displayed value and apply CSS `zoom` to `document.body`.
 - Rotation buttons call `chrome.system.display.setDisplayProperties` with the right rotation value (the API is stubbed during the test so your real display is never rotated).
 - Reboot button shows a confirmation dialog; cancelling it does not call `chrome.runtime.restart`.
 

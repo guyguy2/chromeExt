@@ -12,7 +12,7 @@ const EXT_PATH = path.resolve(__dirname, "..");
 const STUB = () => {
   if (!window.chrome) return;
   // @ts-ignore
-  window.__calls = { rotation: [], reboot: 0, zoom: [] };
+  window.__calls = { rotation: [], reboot: 0 };
   try {
     if (window.chrome.system && window.chrome.system.display) {
       window.chrome.system.display.setDisplayProperties = (id, props, cb) => {
@@ -29,14 +29,6 @@ const STUB = () => {
         // @ts-ignore
         window.__calls.reboot += 1;
       };
-    }
-    if (window.chrome.tabs) {
-      window.chrome.tabs.setZoom = (tabId, level, cb) => {
-        // @ts-ignore
-        window.__calls.zoom.push({ tabId, level });
-        if (cb) cb();
-      };
-      window.chrome.tabs.getCurrent = (cb) => cb({ id: 999 });
     }
   } catch (_) {
     // chrome.* in extension pages may be partially frozen; tests that depend
@@ -117,20 +109,21 @@ test.describe("Kiosk Control extension", () => {
     await expect(page.locator("#controls")).toBeHidden();
   });
 
-  test("zoom in increments label and clamps at max", async () => {
+  test("zoom in increments label and applies CSS zoom", async () => {
     await page.keyboard.press("Control+Shift+S");
     for (let i = 0; i < 3; i++) await page.click("#zoom-in");
     await expect(page.locator("#zoom-val")).toHaveText("130%");
-    const calls = await page.evaluate(() => window.__calls.zoom);
-    expect(calls.length).toBe(3);
-    expect(calls[2].level).toBeCloseTo(1.3, 5);
+    const bodyZoom = await page.evaluate(() => document.body.style.zoom);
+    expect(parseFloat(bodyZoom)).toBeCloseTo(1.3, 5);
   });
 
-  test("zoom out decrements label", async () => {
+  test("zoom out decrements label and applies CSS zoom", async () => {
     await page.keyboard.press("Control+Shift+S");
     await page.click("#zoom-out");
     await page.click("#zoom-out");
     await expect(page.locator("#zoom-val")).toHaveText("80%");
+    const bodyZoom = await page.evaluate(() => document.body.style.zoom);
+    expect(parseFloat(bodyZoom)).toBeCloseTo(0.8, 5);
   });
 
   test("rotation 90 deg calls setDisplayProperties with primary display", async () => {
